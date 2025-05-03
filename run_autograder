@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Set up autograder files
+
+cp /autograder/submission/*.py /autograder/source/
+cp /autograder/submission/*.cpp /autograder/source/
+cp /autograder/submission/*.java /autograder/source/
+cp /autograder/submission/*.in /autograder/source/
+cp /autograder/submission/*.h /autograder/source/
+
+cd /autograder/source
+
+# python3 autograder.py --gradescope-output --edx-output 
+
+for fn in main.py Main.java main.cpp 
+do
+	if test -f "$fn"
+	then 
+	  	case "$fn" in 
+	  		*.cpp | *.c ) 
+		  		g++ $fn -o a.out -std=c++17
+		  		exec="./a.out"
+		  		;;
+		  	*.java )
+		  		javac $fn
+		  		exec="java Main"
+		  		;;
+		  	*.py )
+	  			exec="python3.8 $fn"
+		  		;;
+		esac
+  		# examples
+  		$exec demo.in > demo.out 2>&1
+  		$exec task6.in > task6.out 2>&1
+  		$exec task7.in > task7.out 2>&1
+
+  		# test case 1
+  		$exec clause1.in > clause1.out 2>&1
+
+  		# test case 2
+  		$exec clause2.in > clause2.out 2>&1
+
+  		# test case 3
+  		$exec clause3.in > clause3.out 2>&1
+
+  		# test case 4
+  		$exec clause4.in > clause4.out 2>&1
+	fi 
+done
+
+python3.8 autograder.py
